@@ -8,6 +8,14 @@ public class FunctionBackgroundService(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        double randomStartTime = Random.Shared.Next() / int.MaxValue * 10;
+
+        logger.LogInformation(
+            "Initiating {JobName} job in {Seconds}...",
+            jobName,
+            (int)Math.Round(randomStartTime));
+        await Task.Delay(TimeSpan.FromSeconds(randomStartTime), stoppingToken);
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
@@ -18,8 +26,6 @@ public class FunctionBackgroundService(
                     "Job {JobName} job completed, running again after timespan {Interval}",
                     jobName,
                     interval);
-                
-                await Task.Delay(interval, stoppingToken);
             }
             catch (OperationCanceledException)
             {
@@ -34,6 +40,8 @@ public class FunctionBackgroundService(
                     "An exception was thrown while running job {JobName}",
                     jobName);
             }
+
+            await Task.Delay(interval, stoppingToken);
         }
     }
 }
