@@ -4,17 +4,20 @@ public class FunctionBackgroundService(
     ILogger<FunctionBackgroundService> logger,
     Func<CancellationToken, Task> action,
     TimeSpan interval,
-    string jobName) : BackgroundService
+    string jobName,
+    bool enableJitter = false) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var randomStartTime = (double)Random.Shared.Next() / int.MaxValue * 10;
-
-        logger.LogInformation(
-            "Initiating {JobName} job in {Seconds}...",
-            jobName,
-            (int)Math.Round(randomStartTime));
-        await Task.Delay(TimeSpan.FromSeconds(randomStartTime), stoppingToken);
+        if (enableJitter)
+        {
+            var randomStartTime = (double)Random.Shared.Next() / int.MaxValue * 30;
+            logger.LogInformation(
+                "Initiating {JobName} job in {Seconds} seconds...",
+                jobName,
+                (int)Math.Round(randomStartTime));
+            await Task.Delay(TimeSpan.FromSeconds(randomStartTime), stoppingToken);
+        }
 
         while (!stoppingToken.IsCancellationRequested)
         {

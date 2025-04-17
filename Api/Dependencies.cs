@@ -30,8 +30,7 @@ public static class Dependencies
             .AddOpenApi()
             .AddHttpContextAccessor()
             .AddMemoryCache()
-            .AddSingleton<BrowserHandler>()
-            .AddTransient<RoyalRunJob>();
+            .AddSingleton<BrowserHandler>();
         
         // HttpClients
         builder.Services
@@ -55,8 +54,8 @@ public static class Dependencies
         builder.Services.AddSingleton<TraceIdEnricher>();
         
         // Jobs
-        builder.Services
-            .RegisterGenericJob<RoyalRunJob>("RoyalRun", TimeSpan.FromMinutes(10));
+        builder
+            .RegisterGenericJob<RoyalRunJob>();
     }
     
     private static string GetEnvironmentName(WebApplicationBuilder builder) =>
