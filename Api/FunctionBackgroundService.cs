@@ -8,7 +8,7 @@ public class FunctionBackgroundService(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        double randomStartTime = Random.Shared.Next() / int.MaxValue * 10;
+        var randomStartTime = (double)Random.Shared.Next() / int.MaxValue * 10;
 
         logger.LogInformation(
             "Initiating {JobName} job in {Seconds}...",
